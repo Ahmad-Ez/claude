@@ -1,0 +1,29 @@
+# Claude Code configuration (auth tokens, cache)
+.claude/
+*.local.json
+
+# Node/npm
+node_modules/
+package-lock.json
+*.tgz
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
