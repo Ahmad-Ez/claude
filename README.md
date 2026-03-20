@@ -19,7 +19,7 @@ Run Claude Code autonomously inside an isolated Docker container with network fi
 - VS Code + Dev Containers extension
 - Authenticate Claude Code once on your host:
   ```bash
-  npx @anthropic-ai/claude-code@latest
+  curl -fsSL https://claude.ai/install.sh | bash
   ```
   This stores credentials in `~/.claude/` which containers can access.
 
@@ -109,7 +109,8 @@ The container blocks **all outbound traffic except:**
 | GitHub (all IP ranges) | Social media |
 | npm (registry.npmjs.org) | External APIs |
 | Anthropic API | Crypto, ad networks |
-| Statsig | Everything else |
+| Google Cloud Storage | Everything else |
+| Statsig | |
 | VS Code marketplace | |
 | Localhost + host network | |
 
@@ -176,7 +177,7 @@ This will:
 - Run `Ctrl+Shift+P` → "Dev Containers: Rebuild Container"
 
 **Claude can't find API key**
-- Ensure you ran `npx @anthropic-ai/claude-code@latest` on your host first
+- Ensure you ran `curl -fsSL https://claude.ai/install.sh | bash` on your host first
 - Or run `claude` inside the container to authenticate locally
 
 **`pnpm` not found**

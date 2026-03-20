@@ -31,12 +31,13 @@ echo "$gh_ranges" | jq -e '.web and .api and .git' >/dev/null || { echo "ERROR: 
 
 while read -r cidr; do
     [[ "$cidr" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]] || { echo "ERROR: Invalid CIDR: $cidr"; exit 1; }
-    ipset add allowed-domains "$cidr"
-done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
+    ipset add -! allowed-domains "$cidr"
+done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q | sort -u)
 
 for domain in \
     "registry.npmjs.org" \
     "api.anthropic.com" \
+    "storage.googleapis.com" \
     "sentry.io" \
     "statsig.anthropic.com" \
     "statsig.com" \
@@ -47,8 +48,8 @@ for domain in \
     [ -z "$ips" ] && { echo "ERROR: Failed to resolve $domain"; exit 1; }
     while read -r ip; do
         [[ "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || { echo "ERROR: Invalid IP for $domain: $ip"; exit 1; }
-        ipset add allowed-domains "$ip"
-    done < <(echo "$ips")
+        ipset add -! allowed-domains "$ip"
+    done < <(echo "$ips" | sort -u)
 done
 
 HOST_IP=$(ip route | grep default | cut -d" " -f3)

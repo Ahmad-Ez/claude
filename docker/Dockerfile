@@ -3,12 +3,16 @@ FROM node:20
 ARG TZ=Africa/Cairo
 ENV TZ="$TZ"
 
-ARG CLAUDE_CODE_VERSION=latest
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   less git procps sudo fzf zsh man-db unzip gnupg2 gh \
   iptables ipset iproute2 dnsutils aggregate jq nano vim \
+  locales \
+  && locale-gen en_US.UTF-8 \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 RUN mkdir -p /usr/local/share/npm-global && chown -R node:node /usr/local/share
 
@@ -29,8 +33,10 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 USER node
 
+RUN git config --global core.autocrlf true
+
 ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
-ENV PATH=$PATH:/usr/local/share/npm-global/bin
+ENV PATH=$PATH:/usr/local/share/npm-global/bin:/home/node/.local/bin
 ENV SHELL=/bin/zsh
 ENV EDITOR=nano
 ENV VISUAL=nano
@@ -43,7 +49,9 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} pnpm
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
+RUN npm install -g pnpm
 
 COPY init-firewall.sh /usr/local/bin/
 USER root

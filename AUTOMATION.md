@@ -57,7 +57,7 @@ Once approved, perform these steps:
 
 ### Step 1: Verify host authentication
 ```bash
-test -d ~/.claude && echo "✓ Found ~/.claude" || echo "✗ Need to authenticate first: npx @anthropic-ai/claude-code@latest"
+test -d ~/.claude && echo "✓ Found ~/.claude" || echo "✗ Need to authenticate first: curl -fsSL https://claude.ai/install.sh | bash"
 ```
 
 If `~/.claude` doesn't exist, **stop and instruct the user to authenticate on their host machine first.**
@@ -204,7 +204,7 @@ If Docker build fails:
 - Show the Docker error to the user
 
 If auth is missing:
-- Tell user to run: `npx @anthropic-ai/claude-code@latest` on their host machine
+- Tell user to run: `curl -fsSL https://claude.ai/install.sh | bash` on their host machine
 - Stop execution until they confirm auth is set up
 
 If user denies confirmation at Phase 2:
