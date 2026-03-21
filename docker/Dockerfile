@@ -3,16 +3,19 @@ FROM node:20
 ARG TZ=Africa/Cairo
 ENV TZ="$TZ"
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  locales \
+  && sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen \
+  && locale-gen \
+  && update-locale LANG=en_US.UTF-8 \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   less git procps sudo fzf zsh man-db unzip gnupg2 gh \
   iptables ipset iproute2 dnsutils aggregate jq nano vim \
-  locales \
-  && locale-gen en_US.UTF-8 \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
 
 RUN mkdir -p /usr/local/share/npm-global && chown -R node:node /usr/local/share
 
